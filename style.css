@@ -1,0 +1,200 @@
+
+* {
+    box-sizing: border-box;
+}
+
+    /* WINDOW */
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: rgba(0, 0, 0, 0.877);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    z-index: 4;
+}
+
+    /* GAMEVIEW */
+
+.gameview {
+    width: 698px;
+    height: 500px;
+    background-color: grey;
+    position: relative;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.endScreen{
+    width: 400px;
+    height: 140px;
+    background-color: darkgrey;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border-radius: 7px;
+    box-shadow: 0px 0px  0px 1px rgba(0, 0, 0, 0.6);
+    /* background: linear-gradient(rgb(119, 1, 1),red); */
+}
+
+    /* HEADER */
+
+header {
+    height: 70px;
+    background-color: darkgrey;
+    border-bottom: 1px solid black;
+    margin: 0;
+    position: relative;
+    z-index: 10;
+}
+
+header img {
+    height: 50px;
+    width: 50px;
+    margin-top: 7px;
+    float: right;
+}
+
+.lostText {
+    font-size: 2rem;
+    margin-bottom: 0;
+}
+
+.scoreContainer {
+    height: 70px;
+    margin: 0;
+    display: inline-block;
+}
+
+.scoreContainer p{
+    padding-top: 13px;
+    padding-left: 5px;
+    margin: 0;
+    display: inline-block;
+    font-size: 2rem;
+}
+
+    /* CHARACTER */
+
+.character {
+    background-image: url(frame1.png);
+    width: calc(195*0.3px);
+    height: calc(285*0.3px);
+    background-repeat: none;
+    background-size: 100%;
+    /* border: 1px solid black; */
+    border-radius: 25% 25% 0 0; 
+    position: absolute;
+    top: 70%;
+    left: 400px;
+}
+
+.characterAnimRight{
+    animation: runR 0.3s infinite;
+}
+
+.characterAnimLeft{
+    animation: runL 0.3s infinite;
+}
+
+.characterContainer {
+    width: 698px;
+    height: 500px;
+}
+
+    /* ENEMY */
+
+.enemies {
+    height: 100%;
+    width: 100%;
+}
+
+.enemy {
+    background-color: red;
+    z-index: 1;
+    height: 50px;
+    width: 25px;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 25%;
+    border-top-left-radius: 25%;
+    border: 1px solid black; 
+    background: linear-gradient(red, rgb(119, 1, 1));
+    box-shadow: 4px -6px 6px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 1%;
+    left: 30%;
+    animation: fall 5s forwards;
+    animation-timing-function: linear;
+}
+
+/* ANIMATIONS */
+
+@keyframes fall {
+    0% {
+        top: 1%;
+    }
+    100%{
+        top: 90%;
+    }
+}
+
+@keyframes runR {
+
+    0% {
+        background-image: url(frame1.png);
+    }
+    18% {
+        background-image: url(frame2.png); 
+    }
+    36% {
+        background-image: url(frame3.png); 
+    }
+    55% {
+        background-image: url(frame4.png); 
+    }
+    73% {
+        background-image: url(frame5.png); 
+    }
+    83% {
+        background-image: url(frame6.png); 
+    }
+    100%{
+        background-image: url(frame1.png);
+    }
+}
+
+@keyframes runL {
+
+    0% {
+        transform: scaleX(-1);
+        background-image: url(frame1.png);
+    }
+    18% {
+        transform: scaleX(-1);
+        background-image: url(frame2.png); 
+    }
+    36% {
+        transform: scaleX(-1);
+        background-image: url(frame3.png); 
+    }
+    55% {
+        transform: scaleX(-1);
+        background-image: url(frame4.png); 
+    }
+    73% {
+        transform: scaleX(-1);
+        background-image: url(frame5.png); 
+    }
+    83% {
+        transform: scaleX(-1);
+        background-image: url(frame6.png); 
+    }
+    100%{
+        transform: scaleX(-1);
+        background-image: url(frame1.png);
+    }
+}
