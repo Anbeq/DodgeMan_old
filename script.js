@@ -8,34 +8,74 @@ endScreenContainer = document.querySelector("body");
 
 let goRight = false;
 let goLeft = false;
-let go = true;
+let goUp = false;
+let goDown = false;
+let atBotLimit = false;
+let atLeftLimit = false;
+let atRightLimit = false;
+let atTopLimit = false;
 let score = 0;
 let playerPosition;
 let heart;
 let Lost = false;
+let collisionSofter = 13;
 
 // Eventlisterners
-document.addEventListener('keydown', function(){
-    if (String.fromCharCode(event.keyCode) === "'" ||
+document.addEventListener('keydown', function(event){
+    console.log(String.fromCharCode(event.keyCode));
+
+    if (String.fromCharCode(event.keyCode) === "&" ||
+    String.fromCharCode(event.keyCode) === "W"){
+    goUp = true;
+    if (!goRight && !goLeft)
+    character.classList.add("characterAnimRight");
+    }
+
+    else if (String.fromCharCode(event.keyCode) === "(" ||
+     String.fromCharCode(event.keyCode) === "S"){
+    goDown = true;
+    if (!goRight && !goLeft)
+    character.classList.add("characterAnimRight");
+    }
+
+    else if (String.fromCharCode(event.keyCode) === "'" ||
      String.fromCharCode(event.keyCode) === "D"){
     goRight = true;
     character.classList.add("characterAnimRight");
     }
+
     else if ((String.fromCharCode(event.keyCode) === "%" ||
     String.fromCharCode(event.keyCode) === "A")){
     goLeft = true;
     character.classList.add("characterAnimLeft");
     }
+
     else if (String.fromCharCode(event.keyCode) === "R")
     location.reload();
 })
 
 document.addEventListener('keyup', function(){
+    if (String.fromCharCode(event.keyCode) === "&" ||
+    String.fromCharCode(event.keyCode) === "W"){
+    goUp = false;
+    if (!goRight && !goDown)
+    character.classList.remove("characterAnimRight");
+    }
+
+    else if (String.fromCharCode(event.keyCode) === "(" ||
+    String.fromCharCode(event.keyCode) === "S"){
+    goDown = false;
+    if (!goRight && !goUp)
+    character.classList.remove("characterAnimRight");
+    }
+
     if (String.fromCharCode(event.keyCode) === "'" ||
      String.fromCharCode(event.keyCode) === "D"){
     goRight = false;
+    if (!goDown && !goUp)
     character.classList.remove("characterAnimRight");
     }
+
     else if ((String.fromCharCode(event.keyCode) === "%" ||
     String.fromCharCode(event.keyCode) === "A")){
     goLeft = false;
@@ -68,16 +108,14 @@ let spawnEnemies = setInterval(function(){
 
     }, 1000);
 
-    console.log(player.offsetWidth);
-
 let Update = setInterval(function(){
-
+    console.log(player.offsetLeft);
     enemies = document.querySelectorAll(".enemy");
     for (let enemy of enemies){{
-        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + 10) &&
+        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) &&
             enemy.offsetTop < (player.offsetTop + (player.offsetHeight/3))) &&
-            ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + 10) &&
-            (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - 10))))
+            ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) &&
+            (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter))))
         {
             hearts = document.querySelectorAll(".heart");
             enemyContainer.removeChild(enemy);
@@ -99,13 +137,36 @@ let Update = setInterval(function(){
          Lost = true;
         }
 
+    if (player.offsetTop === 70)
+        atTopLimit = true;
+    else (atTopLimit = false);
+        
+    if (player.offsetTop === 412)
+        atBotLimit = true;
+    else (atBotLimit = false);
 
-    if (goRight){
+    if (player.offsetLeft === 1)
+        atLeftLimit = true;
+    else (atLeftLimit = false);
+
+    if (player.offsetLeft === 637)
+        atRightLimit = true;
+    else (atRightLimit = false);
+
+    if (goRight && !atRightLimit){
         character.style.left = (player.offsetLeft + 1 + "px");
     } 
 
-    if (goLeft){
+    if (goLeft && !atLeftLimit){
         character.style.left = (player.offsetLeft - 1 + "px");
+    }
+    
+    if (goUp && !atTopLimit){
+        character.style.top = (player.offsetTop - 1 + "px");
+    } 
+
+    if (goDown && !atBotLimit){
+        character.style.top = (player.offsetTop + 1 + "px");
     } 
 
     if (Lost)

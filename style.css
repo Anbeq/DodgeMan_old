@@ -85,8 +85,7 @@ header img {
     height: calc(285*0.3px);
     background-repeat: none;
     background-size: 100%;
-    /* border: 1px solid black; */
-    border-radius: 25% 25% 0 0; 
+    /* border: 1px solid black; */ 
     position: absolute;
     top: 70%;
     left: 400px;
@@ -98,11 +97,6 @@ header img {
 
 .characterAnimLeft{
     animation: runL 0.3s infinite;
-}
-
-.characterContainer {
-    width: 698px;
-    height: 500px;
 }
 
     /* ENEMY */
