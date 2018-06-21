@@ -1,10 +1,15 @@
 
+/* DOM ELEMENTS */
+
 enemyContainer = document.querySelector(".enemies");
 scoreContainer = document.querySelector(".scoreContainer");
 player = document.querySelector(".character");
 character = document.querySelector(".character");
 header = document.querySelector(".header");
 endScreenContainer = document.querySelector("body");
+
+
+/* VARIABLES */
 
 let goRight = false;
 let goLeft = false;
@@ -14,15 +19,18 @@ let atBotLimit = false;
 let atLeftLimit = false;
 let atRightLimit = false;
 let atTopLimit = false;
-let score = 0;
-let playerPosition;
-let heart;
 let Lost = false;
+
+let score = 0;
 let collisionSofter = 13;
 
-// Eventlisterners
+let playerPosition;
+let heart;
+
+
+/* EVENTLISTENERS */
+
 document.addEventListener('keydown', function(event){
-    console.log(String.fromCharCode(event.keyCode));
 
     if (String.fromCharCode(event.keyCode) === "&" ||
     String.fromCharCode(event.keyCode) === "W"){
@@ -82,34 +90,25 @@ document.addEventListener('keyup', function(){
     character.classList.remove("characterAnimLeft");
     }
 })
+
 document.addEventListener('keypress', function(){
     if (String.fromCharCode(event.keyCode) === "R")
     location.reload();
 })
 
-// spawn first enemy
-let spawnPosition = Math.floor((Math.random() * (90 - 10 + 1)) + 10);
-let addEnemy = 
-        `
-        <div class="enemy" style="left:${spawnPosition}%"; ></div>
-        `
-enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
 
+/* FUNCTIONS */
 
-// spawn enemies
-let spawnEnemies = setInterval(function(){
+// spawn enemies ev
+const spawnEnemies = setInterval(function(){
 
     let spawnPosition = Math.floor((Math.random() * (90 - 10 + 1)) + 10);
-    let addEnemy = 
-        `
-        <div class="enemy" style="left:${spawnPosition}%"; ></div>
-        `
+    let addEnemy = `<div class="enemy" style="left:${spawnPosition}%"; ></div>`
     enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
-
     }, 1000);
 
-let Update = setInterval(function(){
-    console.log(player.offsetLeft);
+const collisionCheck = function(){
+
     enemies = document.querySelectorAll(".enemy");
     for (let enemy of enemies){{
         if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) &&
@@ -130,12 +129,9 @@ let Update = setInterval(function(){
         scoreContainer.innerHTML = "<p>Score: " + score + "</p>";
         }
     }
+}
 
-    hearts = document.querySelectorAll(".heart");
-    if (hearts.length == 0)
-        {
-         Lost = true;
-        }
+const playerLimitCheck = function(){
 
     if (player.offsetTop === 70)
         atTopLimit = true;
@@ -152,6 +148,9 @@ let Update = setInterval(function(){
     if (player.offsetLeft === 637)
         atRightLimit = true;
     else (atRightLimit = false);
+}
+
+const playerMovement = function(){
 
     if (goRight && !atRightLimit){
         character.style.left = (player.offsetLeft + 1 + "px");
@@ -160,7 +159,7 @@ let Update = setInterval(function(){
     if (goLeft && !atLeftLimit){
         character.style.left = (player.offsetLeft - 1 + "px");
     }
-    
+
     if (goUp && !atTopLimit){
         character.style.top = (player.offsetTop - 1 + "px");
     } 
@@ -168,16 +167,33 @@ let Update = setInterval(function(){
     if (goDown && !atBotLimit){
         character.style.top = (player.offsetTop + 1 + "px");
     } 
+}
+
+const lifeCheck = function(){
+
+    hearts = document.querySelectorAll(".heart");
+    if (hearts.length == 0)
+        Lost = true;
+        
+}
+
+const endGame = function(){
+
+    clearInterval(spawnEnemies);
+    clearInterval(Update);
+    let endScreen = `<div class="endScreen"><p class="lostText">Game over</p><p>Press R to play again</p></div>`
+    endScreenContainer.insertAdjacentHTML("beforeend", endScreen);
+}
+
+
+let Update = setInterval(function(){
+
+    collisionCheck();
+    playerLimitCheck();
+    playerMovement();
+    lifeCheck();
 
     if (Lost)
-    {
-        clearInterval(spawnEnemies);
-        clearInterval(Update);
-        let endScreen = 
-        `
-        <div class="endScreen"><p class="lostText">Game over</p><p>Press R to play again</p></div>
-        `
-        endScreenContainer.insertAdjacentHTML("beforeend", endScreen);
-    }
-}, 1);
+        endGame();
+}, 1)
 
