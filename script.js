@@ -20,6 +20,8 @@ let atLeftLimit = false;
 let atRightLimit = false;
 let atTopLimit = false;
 let Lost = false;
+let pause = false;
+let spawnRight = false;
 
 let score = 0;
 let collisionSofter = 13;
@@ -31,6 +33,13 @@ let heart;
 /* EVENTLISTENERS */
 
 document.addEventListener('keydown', function(event){
+
+    if (String.fromCharCode(event.keyCode) === "P"){
+        if (pause)
+            pause = false;
+        else
+            pause = true;
+    }
 
     if (String.fromCharCode(event.keyCode) === "&" ||
     String.fromCharCode(event.keyCode) === "W"){
@@ -92,108 +101,155 @@ document.addEventListener('keyup', function(){
 })
 
 document.addEventListener('keypress', function(){
+    
     if (String.fromCharCode(event.keyCode) === "R")
     location.reload();
+    
+    
 })
 
 
 /* FUNCTIONS */
 
 // spawn enemies ev
-const spawnEnemies = setInterval(function(){
 
-    let spawnPosition = Math.floor((Math.random() * (90 - 10 + 1)) + 10);
+const spawnEnemiesTop = function(){
+    let spawnPosition = Math.floor((Math.random() * (95 - 0 + 1)));
     let addEnemy = `<div class="enemy" style="left:${spawnPosition}%"; ></div>`
     enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
-    }, 1000);
+}
 
-const collisionCheck = function(){
+const spawnEnemiesRight = function(){
+    let spawnPosition = Math.floor((Math.random() * (95 - 15 + 1))) + 15;
+    let addEnemy = `<div class="enemyRight" style="top:${spawnPosition}%"; ></div>`
+    enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
+}
 
+const collisionCheckRed = function(){
+    // Red enemies
     enemies = document.querySelectorAll(".enemy");
-    for (let enemy of enemies){{
-        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) &&
-            enemy.offsetTop < (player.offsetTop + (player.offsetHeight/3))) &&
-            ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) &&
-            (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter))))
+    for (let enemy of enemies){ //checking collision with red enemies (from top)
+        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) && // Top side of player
+        enemy.offsetTop < (player.offsetTop + (player.offsetHeight - collisionSofter))) &&  // Lower side of player 
+        ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) && // Left side of player
+        (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter)))) // Right side of player
         {
-            hearts = document.querySelectorAll(".heart");
             enemyContainer.removeChild(enemy);
-            heart = hearts[hearts.length -1];
-            header.removeChild(heart);
+            removeHeart();
         }
-    }
-
-    if (enemy.offsetTop > (447)){
+    if (enemy.offsetTop > (450)){ // Enemy has passed the field without hitting player
         enemyContainer.removeChild(enemy);
-        score++;
-        scoreContainer.innerHTML = "<p>Score: " + score + "</p>";
-        }
+        increaseScore();
     }
+}
+}
+
+const collisionCheckBlue = function(){
+    // Blue enemies
+    let enemiesRight = document.querySelectorAll(".enemyRight");
+    for (let enemy of enemiesRight){ //checking collision with blue enemies (from Right)
+        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) && // Top side of player
+        enemy.offsetTop < (player.offsetTop + (player.offsetHeight - collisionSofter))) &&  // Lower side of player 
+        ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) && // Left side of player
+        (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter)))) // Right side of player
+        {
+            enemyContainer.removeChild(enemy);
+            removeHeart();
+        }
+    if (enemy.offsetLeft < (1)){ // Enemy has passed the field without hitting player
+        enemyContainer.removeChild(enemy);
+        increaseScore();
+    }
+}
+}
+
+const increaseScore = function(){
+    score++;
+    scoreContainer.innerHTML = "<p>Score: " + score + "</p>";
+}
+
+const removeHeart = function(){
+    hearts = document.querySelectorAll(".heart");
+    heart = hearts[hearts.length -1];
+    header.removeChild(heart);
 }
 
 const playerLimitCheck = function(){
-
-    if (player.offsetTop === 70)
-        atTopLimit = true;
+    // Making so the player cant walk outside the gameview
+    if (player.offsetTop === 70) // Top limit 
+    atTopLimit = true;
     else (atTopLimit = false);
-        
-    if (player.offsetTop === 412)
-        atBotLimit = true;
+    
+    if (player.offsetTop === (442)) // Bot limit
+    atBotLimit = true;
     else (atBotLimit = false);
-
-    if (player.offsetLeft === 1)
-        atLeftLimit = true;
+    
+    if (player.offsetLeft === 1) // Left limit
+    atLeftLimit = true;
     else (atLeftLimit = false);
-
-    if (player.offsetLeft === 637)
-        atRightLimit = true;
+    
+    if (player.offsetLeft === 657) // Right limit
+    atRightLimit = true;
     else (atRightLimit = false);
 }
 
 const playerMovement = function(){
-
+    
     if (goRight && !atRightLimit){
         character.style.left = (player.offsetLeft + 1 + "px");
     } 
-
+    
     if (goLeft && !atLeftLimit){
         character.style.left = (player.offsetLeft - 1 + "px");
     }
-
+    
     if (goUp && !atTopLimit){
         character.style.top = (player.offsetTop - 1 + "px");
     } 
-
+    
     if (goDown && !atBotLimit){
         character.style.top = (player.offsetTop + 1 + "px");
     } 
 }
 
 const lifeCheck = function(){
-
+    
     hearts = document.querySelectorAll(".heart");
     if (hearts.length == 0)
-        Lost = true;
-        
+    Lost = true;
+    
 }
 
 const endGame = function(){
-
+    
     clearInterval(spawnEnemies);
     clearInterval(Update);
     let endScreen = `<div class="endScreen"><p class="lostText">Game over</p><p>Press R to play again</p></div>`
     endScreenContainer.insertAdjacentHTML("beforeend", endScreen);
 }
 
+    /* RUNNING THE GAME */
+
+const spawnEnemies = setInterval(function(){
+    if (pause === false){
+    spawnEnemiesTop();
+
+    if (score > 20)
+        spawnEnemiesRight();
+    }
+}, 1000);
 
 let Update = setInterval(function(){
-
-    collisionCheck();
+    if (pause === false)
+    {
+    collisionCheckRed();
+    collisionCheckBlue();
     playerLimitCheck();
     playerMovement();
     lifeCheck();
 
     if (Lost)
         endGame();
+    }
 }, 1)
 

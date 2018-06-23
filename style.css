@@ -81,8 +81,8 @@ header img {
 
 .character {
     background-image: url(frame1.png);
-    width: calc(195*0.3px);
-    height: calc(285*0.3px);
+    width: calc(195*0.2px);
+    height: calc(285*0.201px);
     background-repeat: none;
     background-size: 100%;
     /* border: 1px solid black; */ 
@@ -125,6 +125,25 @@ header img {
     animation-timing-function: linear;
 }
 
+.enemyRight {
+    background-color: red;
+    z-index: 1;
+    height: 25px;
+    width: 50px;
+    border-bottom-right-radius: 25%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 25%;
+    border-top-left-radius: 50%;
+    border: 1px solid black; 
+    background: linear-gradient(rgb(0, 47, 255), rgb(0, 17, 110));
+    box-shadow: 4px -6px 6px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 1%;
+    left: 100%;
+    animation: goLeft 6s forwards;
+    animation-timing-function: linear;
+}
+
 /* ANIMATIONS */
 
 @keyframes fall {
@@ -132,7 +151,16 @@ header img {
         top: 1%;
     }
     100%{
-        top: 90%;
+        top: 91%;
+    }
+}
+
+@keyframes goLeft {
+    0% {
+        left: 105%;
+    }
+    100%{
+        left: 0%;
     }
 }
 
