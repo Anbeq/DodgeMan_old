@@ -22,9 +22,17 @@ let atTopLimit = false;
 let Lost = false;
 let pause = false;
 let spawnRight = false;
+let spawnSpeed = 1000;
+let increasedOnce = false;
+let increasedtwice = false;
+let increasedthrice = false;
 
 let score = 0;
 let collisionSofter = 13;
+let redDestroyPosition = 447.5;
+let blueDestroyPosition = 1;
+let greenDestroyPosition = 639;
+let darkDestroyPosition = 70;
 
 let playerPosition;
 let heart;
@@ -125,43 +133,46 @@ const spawnEnemiesRight = function(){
     enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
 }
 
-const collisionCheckRed = function(){
-    // Red enemies
-    enemies = document.querySelectorAll(".enemy");
-    for (let enemy of enemies){ //checking collision with red enemies (from top)
-        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) && // Top side of player
-        enemy.offsetTop < (player.offsetTop + (player.offsetHeight - collisionSofter))) &&  // Lower side of player 
-        ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) && // Left side of player
-        (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter)))) // Right side of player
-        {
-            enemyContainer.removeChild(enemy);
-            removeHeart();
-        }
-    if (enemy.offsetTop > (450)){ // Enemy has passed the field without hitting player
-        enemyContainer.removeChild(enemy);
-        increaseScore();
-    }
-}
+const spawnEnemiesLeft = function(){
+    let spawnPosition = Math.floor((Math.random() * (95 - 15 + 1))) + 15;
+    let addEnemy = `<div class="enemyLeft" style="top:${spawnPosition}%"; ></div>`
+    enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
 }
 
-const collisionCheckBlue = function(){
-    // Blue enemies
-    let enemiesRight = document.querySelectorAll(".enemyRight");
-    for (let enemy of enemiesRight){ //checking collision with blue enemies (from Right)
-        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter +3) && // Top side of player
+const spawnEnemiesBottom = function(){
+    let spawnPosition = Math.floor((Math.random() * (95 - 0 + 1)));
+    let addEnemy = `<div class="enemyBottom" style="left:${spawnPosition}%"; ></div>`
+    enemyContainer.insertAdjacentHTML("beforeend", addEnemy);
+}
+
+const spawnAllEnemies = function(){
+    spawnEnemiesTop();
+    spawnEnemiesRight();
+    spawnEnemiesLeft();
+    spawnEnemiesBottom();
+}
+
+const collisionCheck = function(enemies, destroyPosition, color){
+    for (let enemy of enemies){ //checking player collision with enemies
+        if (((enemy.offsetTop + enemy.offsetHeight) > (player.offsetTop + collisionSofter) && // Top side of player
         enemy.offsetTop < (player.offsetTop + (player.offsetHeight - collisionSofter))) &&  // Lower side of player 
         ((enemy.offsetLeft + enemy.offsetWidth) > (player.offsetLeft + collisionSofter) && // Left side of player
-        (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter)))) // Right side of player
-        {
+        (enemy.offsetLeft) < (player.offsetLeft + (player.offsetWidth - collisionSofter)))){ // Right side of player
+            
             enemyContainer.removeChild(enemy);
             removeHeart();
         }
-    if (enemy.offsetLeft < (1)){ // Enemy has passed the field without hitting player
-        enemyContainer.removeChild(enemy);
-        increaseScore();
+        if ((color === "red" && enemy.offsetTop > (destroyPosition)) || 
+            (color === "blue" && enemy.offsetLeft < (destroyPosition)) ||
+            (color === "green" && enemy.offsetLeft > (destroyPosition)) ||
+            (color === "dark" && enemy.offsetTop < (destroyPosition))){ // Enemy has passed the field without hitting player  
+            enemyContainer.removeChild(enemy);
+            increaseScore();
+        }
     }
 }
-}
+
+
 
 const increaseScore = function(){
     score++;
@@ -230,23 +241,64 @@ const endGame = function(){
 
     /* RUNNING THE GAME */
 
-const spawnEnemies = setInterval(function(){
+let spawnEnemies = setInterval(function(){
     if (pause === false){
-    spawnEnemiesTop();
+        spawnEnemiesTop();
 
-    if (score > 20)
+    if (score > 10)
         spawnEnemiesRight();
+    
+    if (score > 50)
+        spawnEnemiesLeft();
+    
+
+    if (score > 80)
+        spawnEnemiesBottom();
     }
-}, 1000);
+    
+}, spawnSpeed);
 
 let Update = setInterval(function(){
     if (pause === false)
     {
-    collisionCheckRed();
-    collisionCheckBlue();
+
+    let enemiesTop = document.querySelectorAll(".enemy");
+    collisionCheck(enemiesTop, redDestroyPosition, "red");
+    
+    let enemiesRight = document.querySelectorAll(".enemyRight");
+    collisionCheck(enemiesRight, blueDestroyPosition, "blue");
+
+    let enemiesLeft = document.querySelectorAll(".enemyLeft");
+    collisionCheck(enemiesLeft, greenDestroyPosition, "green");
+
+    let enemiesBottom = document.querySelectorAll(".enemyBottom");
+    collisionCheck(enemiesBottom, darkDestroyPosition, "dark");
+    
+    
     playerLimitCheck();
     playerMovement();
     lifeCheck();
+
+    if (score > 160 && increasedOnce === false){
+        clearInterval(spawnEnemies);
+        spawnSpeed = 800;
+        increasedOnce = true;
+        spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
+    }
+
+    if (score > 300 && increasedtwice === false){
+        clearInterval(spawnEnemies);
+        spawnSpeed = 600;
+        increasedtwice = true;
+        spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
+    }
+
+    if (score > 420 && increasedthrice === false){
+        clearInterval(spawnEnemies);
+        spawnSpeed = 500;
+        increasedthrice = true;
+        spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
+    }
 
     if (Lost)
         endGame();

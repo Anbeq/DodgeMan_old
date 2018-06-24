@@ -126,7 +126,6 @@ header img {
 }
 
 .enemyRight {
-    background-color: red;
     z-index: 1;
     height: 25px;
     width: 50px;
@@ -138,9 +137,42 @@ header img {
     background: linear-gradient(rgb(0, 47, 255), rgb(0, 17, 110));
     box-shadow: 4px -6px 6px rgba(0, 0, 0, 0.8);
     position: absolute;
-    top: 1%;
     left: 100%;
     animation: goLeft 6s forwards;
+    animation-timing-function: linear;
+}
+
+.enemyLeft {
+    z-index: 1;
+    height: 25px;
+    width: 50px;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 25%;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 25%;
+    border: 1px solid black; 
+    background: linear-gradient(rgb(25, 214, 0), rgb(0, 110, 19));
+    box-shadow: 4px -6px 6px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    left: -1%;
+    animation: goRight 6s forwards;
+    animation-timing-function: linear;
+}
+
+.enemyBottom {
+    z-index: 1;
+    height: 50px;
+    width: 25px;
+    border-bottom-right-radius: 25%;
+    border-bottom-left-radius: 25%;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    border: 1px solid black; 
+    background: linear-gradient(rgb(41, 41, 41), rgb(20, 20, 20));
+    box-shadow: 4px -6px 6px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    left: -1%;
+    animation: goUp 6s forwards;
     animation-timing-function: linear;
 }
 
@@ -151,16 +183,46 @@ header img {
         top: 1%;
     }
     100%{
-        top: 91%;
+        top: 90%;
     }
 }
 
 @keyframes goLeft {
     0% {
+        opacity: 0;
         left: 105%;
+    }
+    7% {
+        opacity: 1;
     }
     100%{
         left: 0%;
+    }
+}
+
+@keyframes goRight {
+    0% {
+        left: -5%;
+        opacity: 0;
+    }
+    7% {
+        opacity: 1;
+    }
+    100%{
+        left: 92.8%;
+    }
+}
+
+@keyframes goUp {
+    0% {
+        top: 105%;
+        opacity: 0;
+    }
+    7% {
+        opacity: 1;
+    }
+    100%{
+        top: 2%;
     }
 }
 
