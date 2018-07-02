@@ -26,6 +26,7 @@ let spawnSpeed = 1000;
 let increasedOnce = false;
 let increasedtwice = false;
 let increasedthrice = false;
+let increasedFourth = false;
 
 let score = 0;
 let collisionSofter = 13;
@@ -41,13 +42,6 @@ let heart;
 /* EVENTLISTENERS */
 
 document.addEventListener('keydown', function(event){
-
-    if (String.fromCharCode(event.keyCode) === "P"){
-        if (pause)
-            pause = false;
-        else
-            pause = true;
-    }
 
     if (String.fromCharCode(event.keyCode) === "&" ||
     String.fromCharCode(event.keyCode) === "W"){
@@ -112,7 +106,6 @@ document.addEventListener('keypress', function(){
     
     if (String.fromCharCode(event.keyCode) === "R")
     location.reload();
-    
     
 })
 
@@ -242,25 +235,22 @@ const endGame = function(){
     /* RUNNING THE GAME */
 
 let spawnEnemies = setInterval(function(){
-    if (pause === false){
-        spawnEnemiesTop();
+    spawnEnemiesTop();
 
-    if (score > 10)
+    if (score > 5)
         spawnEnemiesRight();
     
-    if (score > 50)
+    if (score > 25)
         spawnEnemiesLeft();
     
 
-    if (score > 80)
+    if (score > 50)
         spawnEnemiesBottom();
-    }
     
 }, spawnSpeed);
 
+
 let Update = setInterval(function(){
-    if (pause === false)
-    {
 
     let enemiesTop = document.querySelectorAll(".enemy");
     collisionCheck(enemiesTop, redDestroyPosition, "red");
@@ -279,29 +269,35 @@ let Update = setInterval(function(){
     playerMovement();
     lifeCheck();
 
-    if (score > 160 && increasedOnce === false){
+    if (score > 90 && increasedOnce === false){
         clearInterval(spawnEnemies);
         spawnSpeed = 800;
         increasedOnce = true;
         spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
     }
 
-    if (score > 300 && increasedtwice === false){
+    if (score > 160 && increasedtwice === false){
         clearInterval(spawnEnemies);
         spawnSpeed = 600;
         increasedtwice = true;
         spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
     }
 
-    if (score > 420 && increasedthrice === false){
+    if (score > 270 && increasedthrice === false){
         clearInterval(spawnEnemies);
         spawnSpeed = 500;
         increasedthrice = true;
         spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
     }
 
+    if (score > 500 && increasedFourth === false){
+        clearInterval(spawnEnemies);
+        spawnSpeed = 400;
+        increasedFourth = true;
+        spawnEnemies = setInterval(spawnAllEnemies, spawnSpeed);
+    }
+
     if (Lost)
         endGame();
-    }
 }, 1)
 
